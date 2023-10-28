@@ -1,0 +1,35 @@
+.grid-list{
+  display: flex;
+  min-width: 65vw;
+  justify-content: space-around;
+  align-items: center;
+}
+ul .grid-para {
+  /* clear: left; */
+  overflow-y: scroll;
+  width: 90%;
+  min-width: 90%;
+  min-height: 40px;
+  max-height: 100px;
+  padding: 8px 10px;
+  font-family: "Josefin Sans", sans-serif;
+  border-radius: 10px;
+  background-color: #c4dcd3;
+  box-shadow: 0 2px 5px black;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.grid-para::-webkit-scrollbar {
+  width: 0.1em;
+}
+
+.grid-para::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+.star{
+  font-size: 24px;
+}
+.star:hover{
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+}
