@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal, Box, TextField, Button } from "@mui/material";
 import { AiOutlinePlus, AiOutlineEdit } from "react-icons/ai";
-import { addDoc,doc } from "firebase/firestore";
 
 const style = {
   position: "absolute",
@@ -16,26 +15,8 @@ const style = {
 };
 
 const InputModal = (props) => {
-    const {open,setOpen,todo,setTodo,setOpenAlert,dbCollection,handleOpen} = props;
-    
-    
-  const addtask = async () => {
-    if (!todo) {
-      setOpenAlert(true);
-    } else {
-      const ref = await addDoc(dbCollection, {
-        todo,
-        important: false,
-        completed: false,
-        time: new Date(),
-      });
-      console.log(ref.id);
-      setOpenAlert(false);
-      setTodo("");
-    }
-    handleOpen();
-  };
-
+    const {open,todo,setTodo,handleOpen,addtask} = props;
+      
   return (
     <Modal
       open={open}
@@ -57,9 +38,7 @@ const InputModal = (props) => {
             id="standard-basic"
             label="Todo"
             variant="standard"
-            onChange={(e) => {
-              setTodo(e.target.value);
-            }}
+            onChange={setTodo}
             value={todo}
           />
           <Button

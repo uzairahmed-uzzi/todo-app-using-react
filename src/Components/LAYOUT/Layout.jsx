@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  collection,
-  getDocs,
-  query,
-  orderBy,
-} from "firebase/firestore";
-import { db } from "../../Firebase/Firebase";
+import { useFireBase } from "../../Firebase/Firebase";
 import "./Layout.css";
 import Sidebar from "../SIDEBAR/Sidebar";
 import ActionButton from "../ActionButton/ActionButton";
@@ -14,13 +8,23 @@ import Alerts from "../Alert/Alerts";
 import InputModal from "../InputModal/InputModal";
 
 const Layout = () => {
+  const firebase=useFireBase();
   const [todo, setTodo] = useState("");
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
   const [openAlert, setOpenAlert] = useState(false);
   const [keyArr, setkeyArr] = useState([]);
   const [visibilty, setVisibility] = useState(false);
-  const [check, setCheck] = useState(false);
+  // const [check, setCheck] = useState(false);
+  const [star, toggleStar] = useState(false);
+  const handleStar = async(e,id) => {
+    const obj = data.find((item) => item.id === id);
+    const imp=obj.important;
+    obj.important= !imp;
+    const res= await firebase.updateData(id,{important:obj.important});
+    console.log(res);
+    toggleStar(obj.important);
+  };
   
 
   const enabler = () => {
@@ -33,46 +37,52 @@ const Layout = () => {
 
   useEffect(() => {
     enabler();
-    console.log("key ARR",keyArr);
-
+    console.log("key ARR", keyArr);
   }, [keyArr]);
 
   const handleOpen = () => {
     setOpen(!open);
   };
-  // create collection
-  const dbCollection = collection(db, "todo");
+
   // getting data
-  useEffect(() => {
-    (async () => {
-      const querySnapshot = await getDocs(
-        query(dbCollection, orderBy("time", "asc"))
-      );
-
-      const dataArray = [];
-
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        dataArray.push({ id: doc.id, data });
-      });
-
-      setData(dataArray);
-    })();
-  }, [data]);
-
-  const handleSelect = (e,id) => {
-
-     setkeyArr((prevKeyArr) => {
-      if (check) {
+  const getData=async() => {
+    const res=await firebase.getAllData();
+      setData(res);    
+  }
+  useEffect(()=>getData(), [open]);
+// CHECK UN CHECK
+  const handleSelect = (e, id) => {
+    const obj = data.find((item) => item.id === id);
+    if (obj.checked) {
+      setkeyArr((prevKeyArr) => {
         return prevKeyArr.filter((item) => item !== id);
-      } else {
-        return [...prevKeyArr, id];
-      }
-    });
-
-    setCheck(!check);
+      });
+    } else {
+      setkeyArr((prevKeyArr) => [...prevKeyArr, id]);
+    }
+    obj.checked = !obj.checked;
   };
-  
+
+  // add task
+  const addtask = async () => {
+    if (!todo) {
+      setOpenAlert(true);
+    } else {
+      const ref = await firebase.postData({
+        todo,
+        important: false,
+        completed: false,
+        time: new Date(),
+      } );
+      console.log(ref.id);
+      setOpenAlert(false);
+      setTodo("");
+    }
+    handleOpen();
+  };
+
+
+// RENDERING..............
   return (
     <>
       {openAlert ? (
@@ -121,8 +131,11 @@ const Layout = () => {
                   <GridViewList
                     para={ele.data.todo}
                     key={ele.id}
-                    id={ele.id}
-                    handle={handleSelect}
+                    handle={(e) => {
+                      handleSelect(e, ele.id);
+                    }}
+                    star={star}
+                    handleStar={(e)=>handleStar(e,ele.id)}
                     enable={enabler}
                   />
                 ))}
@@ -135,12 +148,10 @@ const Layout = () => {
       {/* MODAL  */}
       <InputModal
         open={open}
-        setOpen={setOpen}
-        dbCollection={dbCollection}
         todo={todo}
-        setTodo={setTodo}
-        setOpenAlert={setOpenAlert}
+        setTodo={(e) => setTodo(e.target.value)}
         handleOpen={handleOpen}
+        addtask={addtask}
       />
     </>
   );

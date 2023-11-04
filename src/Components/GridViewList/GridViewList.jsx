@@ -4,21 +4,9 @@ import Checkbox from "@mui/material/Checkbox";
 import "./GridViewList.css";
 const GridViewList = (props) => {
   const handleSelect=props.handle;
-  const [star, toggleStar] = useState(false);
-  // const [check, setCheck] = useState(false);
-  const handleStar = () => {
-    toggleStar(!star);
-  };
-  // const handleSelect=async ()=>{
-  //   if(!check){
-  //     setCheck(true)
-  //     const newArray =await props.keyArray.filter(item => item !== props.id);
-  //      await props.setterKeyArr(newArray);
-  //   }else{
-  //     setCheck(false);
-  //     props.setterKeyArr([...props.keyArray,props.id])      
-  //   }
-  // }
+  const handleStar=props.handleStar;
+  const star=props.star
+
   return (
     <li className="grid-list">
       {star ? (
@@ -26,9 +14,11 @@ const GridViewList = (props) => {
       ) : (
         <AiOutlineStar className="star" onClick={handleStar} />
       )}
+
+
       <p className="grid-para">{props.para}</p>
 
-      <Checkbox  onClick={(e)=>handleSelect(e,props.id)} />
+      <Checkbox  onClick={handleSelect} />
     </li>
   );
 };
