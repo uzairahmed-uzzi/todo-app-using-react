@@ -9,6 +9,7 @@ import {
   orderBy,
   addDoc,
   doc,
+  deleteDoc,
   updateDoc
 } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -46,14 +47,21 @@ export const FireBaseProvider=(props)=>{
   }
   // ADD DATA
   const postData=async(data)=>await addDoc(dbCollection,data);
+  // UPDATE DATA
   const updateData=async(idref,data)=>{
     const docRef=doc(db,'todo',idref);
-    const res= await updateDoc(docRef,data);
-    return res;
+     await updateDoc(docRef,data);
+    console.log("UPDATED....");
+  }
+  // DELETE DATA
+  const deleteData=async(idref)=>{
+    const docRef=doc(db,'todo',idref);
+    await deleteDoc(docRef)
+    console.log("DELETED...")
   }
   return(
   <>
-  <FirebaseContext.Provider value={{getAllData,postData,updateData}}>
+  <FirebaseContext.Provider value={{getAllData,postData,updateData,deleteData}}>
     {props.children}
   </FirebaseContext.Provider>
   </>

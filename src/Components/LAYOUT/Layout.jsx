@@ -6,27 +6,83 @@ import ActionButton from "../ActionButton/ActionButton";
 import GridViewList from "../GridViewList/GridViewList";
 import Alerts from "../Alert/Alerts";
 import InputModal from "../InputModal/InputModal";
+import ConfirmModal from "../ConfirmModal/ConfirmModal";
+import Tasks from "../Tasks/Tasks";
+import {Outlet} from 'react-router-dom'
 
 const Layout = () => {
-  const firebase=useFireBase();
+  const firebase = useFireBase();
   const [todo, setTodo] = useState("");
   const [open, setOpen] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+  const [openConfirmDelete, setConfirmOpenDelete] = useState(false);
   const [data, setData] = useState([]);
   const [openAlert, setOpenAlert] = useState(false);
   const [keyArr, setkeyArr] = useState([]);
   const [visibilty, setVisibility] = useState(false);
-  // const [check, setCheck] = useState(false);
-  const [star, toggleStar] = useState(false);
-  const handleStar = async(e,id) => {
-    const obj = data.find((item) => item.id === id);
-    const imp=obj.important;
-    obj.important= !imp;
-    const res= await firebase.updateData(id,{important:obj.important});
-    console.log(res);
-    toggleStar(obj.important);
+  const [msg, setMsg] = useState("must not be empty");
+  // EDIT TODO
+  const editTodo = (e) => {
+    if (keyArr.length === 1) {
+      const obj = data.find((item) => item.id === keyArr[0]);
+      setTodo(obj.data.todo);
+      handleOpen();
+      setEdit(true);
+    } else if (keyArr.length > 1) {
+      setMsg("only 1 should be selected");
+      setOpenAlert(true);
+    } else {
+      setMsg("Select atleast 1 ");
+      setOpenAlert(true);
+    }
   };
-  
+  // MARK COMPLETED
+  const markCompleted = () => {
+    if (keyArr.length >= 1) {
+      keyArr.forEach(async (ele, ind) => {
+        const obj = data.find((item) => item.id === ele);
+        obj && (await firebase.updateData(ele, { completed: true }));
+      });
+    } else {
+      setMsg("Select atleast 1 ");
+      setOpenAlert(true);
+    }
+    setRefresh((prev) => !prev);
+    handleConfirmOpen();
+  };
+  // DELETE DATA
+  const markDeleted = () => {
+    if (keyArr.length >= 1) {
+      keyArr.forEach(async (ele, ind) => {
+        const obj = data.find((item) => item.id === ele);
+        obj && (await firebase.deleteData(ele));
+        keyArr.slice(ind, 1);
+      });
+    } else {
+      setMsg("Select atleast 1 ");
+      setOpenAlert(true);
+    }
+    setRefresh((prev) => !prev);
 
+    handleConfirmOpenDelete();
+  };
+  // CONFIRM TASK
+  // const confirmTask=(e,op)=>{
+  //   if(op===1){
+  //     // COMPLETED TASKS
+  //     setCompleted(true);
+  //     handleConfirmOpen()
+  //   }else if(op===2){
+  //     handleConfirmOpen()
+  //   }else{
+  //     setMsg("Cancelled");
+  //     setOpenAlert(true);
+  //   }
+  // }
+
+  // ENABLE ACTION BUTTONS
   const enabler = () => {
     if (keyArr.length > 0) {
       setVisibility(true);
@@ -34,23 +90,31 @@ const Layout = () => {
       setVisibility(false);
     }
   };
-
   useEffect(() => {
     enabler();
     console.log("key ARR", keyArr);
   }, [keyArr]);
 
+  //OPEN MODAL
+  const handleConfirmOpen = () => {
+    setOpenConfirm(!openConfirm);
+  };
+  const handleConfirmOpenDelete = () => {
+    setConfirmOpenDelete(!openConfirmDelete);
+  };
   const handleOpen = () => {
     setOpen(!open);
   };
 
   // getting data
-  const getData=async() => {
-    const res=await firebase.getAllData();
-      setData(res);    
-  }
-  useEffect(()=>getData(), [open]);
-// CHECK UN CHECK
+  const getData = async () => {
+    const res = await firebase.getAllData();
+    setData(res);
+  };
+  useEffect(() => {
+    getData();
+  }, [open, refresh]);
+  // CHECK UN CHECK
   const handleSelect = (e, id) => {
     const obj = data.find((item) => item.id === id);
     if (obj.checked) {
@@ -62,34 +126,32 @@ const Layout = () => {
     }
     obj.checked = !obj.checked;
   };
-
+console.log(data)
   // add task
   const addtask = async () => {
     if (!todo) {
       setOpenAlert(true);
+    } else if (edit) {
+      await firebase.updateData(keyArr[0], { todo: todo });
     } else {
       const ref = await firebase.postData({
         todo,
         important: false,
         completed: false,
         time: new Date(),
-      } );
+      });
       console.log(ref.id);
-      setOpenAlert(false);
-      setTodo("");
     }
+    setOpenAlert(false);
+    setEdit(false);
+    setTodo("");
     handleOpen();
   };
 
-
-// RENDERING..............
+  // RENDERING..............
   return (
     <>
-      {openAlert ? (
-        <Alerts sev="warning" message="Must not be empty" openVal={true} />
-      ) : (
-        ""
-      )}
+      {openAlert && <Alerts sev="warning" message={msg} openVal={true} />}
 
       <div className="container">
         <Sidebar />
@@ -108,17 +170,19 @@ const Layout = () => {
               {visibilty ? (
                 <>
                   <ActionButton
-                    action_title="delete all"
+                    action_title="delete"
                     action_image="/images/bin.png"
+                    func={() => handleConfirmOpenDelete()}
                   />
                   <ActionButton
-                    action_title="Edit"
+                    action_title="edit"
                     action_image="/images/edit.png"
-                    func={handleOpen}
+                    func={editTodo}
                   />
                   <ActionButton
-                    action_title="Mark Completed"
+                    action_title="mark completed"
                     action_image="/images/checked.png"
+                    func={() => handleConfirmOpen()}
                   />
                 </>
               ) : (
@@ -126,20 +190,11 @@ const Layout = () => {
               )}
             </aside>
             <aside className="data-grid-container">
-              <ul>
-                {data.map((ele) => (
-                  <GridViewList
-                    para={ele.data.todo}
-                    key={ele.id}
-                    handle={(e) => {
-                      handleSelect(e, ele.id);
-                    }}
-                    star={star}
-                    handleStar={(e)=>handleStar(e,ele.id)}
-                    enable={enabler}
-                  />
-                ))}
-              </ul>
+            { data && <Outlet
+                handleSelect={handleSelect}
+                data={data}
+                enabler={enabler}
+              />}
             </aside>
           </main>
         </div>
@@ -152,6 +207,18 @@ const Layout = () => {
         setTodo={(e) => setTodo(e.target.value)}
         handleOpen={handleOpen}
         addtask={addtask}
+      />
+      <ConfirmModal
+        open={openConfirm}
+        handleOpen={handleConfirmOpen}
+        confirmTask={() => markCompleted()}
+        cancelTask={() => handleConfirmOpen()}
+      />
+      <ConfirmModal
+        open={openConfirmDelete}
+        handleOpen={handleConfirmOpenDelete}
+        confirmTask={() => markDeleted()}
+        cancelTask={() => handleConfirmOpenDelete()}
       />
     </>
   );

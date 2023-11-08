@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal, Box, TextField, Button } from "@mui/material";
-import { AiOutlinePlus, AiOutlineEdit,AiOutlineCheck } from "react-icons/ai";
+import { AiOutlineCheck,AiOutlineClear } from "react-icons/ai";
+import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 
 const style = {
   position: "absolute",
@@ -14,8 +15,8 @@ const style = {
   p: 4,
 };
 
-const InputModal = (props) => {
-    const {open,todo,setTodo,handleOpen,addtask} = props;
+const ConfirmModal = (props) => {
+    const {open,handleOpen,confirmTask,cancelTask} = props;
       
   return (
     <Modal
@@ -34,21 +35,27 @@ const InputModal = (props) => {
           noValidate
           autoComplete="off"
         >
-          <TextField
-            id="standard-basic"
-            label="Todo"
-            variant="standard"
-            onChange={setTodo}
-            value={todo}
-          />
+          
           <Button
             variant="contained"
-            sx={{ border: "1px solid black" }}
+            sx={{ border: "1px solid black",fontSize:"2rem" }}
             onClick={() => {
-              addtask();
+              confirmTask();
             }}
+        
           >
             <AiOutlineCheck />{" "}
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ border: "1px solid black",fontSize:"2rem" }}
+            onClick={() => {
+              cancelTask();
+            }}
+         
+
+          >
+            <ClearOutlinedIcon />{" "}
           </Button>
         </Box>
       </Box>
@@ -56,4 +63,4 @@ const InputModal = (props) => {
   );
 };
 
-export default InputModal;
+export default ConfirmModal;
