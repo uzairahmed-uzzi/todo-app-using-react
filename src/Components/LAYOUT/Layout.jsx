@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useFireBase } from "../../Firebase/Firebase";
+import { useParams,useLocation } from "react-router-dom";
 import "./Layout.css";
 import Sidebar from "../SIDEBAR/Sidebar";
 import ActionButton from "../ActionButton/ActionButton";
-import GridViewList from "../GridViewList/GridViewList";
 import Alerts from "../Alert/Alerts";
 import InputModal from "../InputModal/InputModal";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
-import Tasks from "../Tasks/Tasks";
 import {Outlet} from 'react-router-dom'
 
 const Layout = () => {
@@ -24,6 +23,19 @@ const Layout = () => {
   const [keyArr, setkeyArr] = useState([]);
   const [visibilty, setVisibility] = useState(false);
   const [msg, setMsg] = useState("must not be empty");
+  const location=useLocation();
+  const [pathName,setPathName]=useState("Tasks");
+  const switchPathName=()=>{
+    const path=location.pathname.slice(1,);
+    switch(path){
+    case "important":
+      return "Importants Tasks";
+    case "completed":
+      return "Completed Tasks"
+    default:
+      return "Tasks";
+    }
+  }
   // EDIT TODO
   const editTodo = (e) => {
     if (keyArr.length === 1) {
@@ -93,7 +105,6 @@ const Layout = () => {
   };
   useEffect(() => {
     enabler();
-    console.log("key ARR", keyArr);
   }, [keyArr]);
 
   //OPEN MODAL
@@ -121,6 +132,7 @@ const Layout = () => {
       ele.checked=false;
     })
     setkeyArr([]);  
+    setPathName(()=>switchPathName());
   },[refreshPage,refresh])
   // CHECK UN CHECK
   const handleSelect = (e, id) => {
@@ -134,7 +146,7 @@ const Layout = () => {
     }
     obj.checked = !obj.checked;
   };
-console.log(data)
+
   // add task
   const addtask = async () => {
     if (!todo) {
@@ -148,7 +160,7 @@ console.log(data)
         completed: false,
         time: new Date(),
       });
-      console.log(ref.id);
+
     }
     setOpenAlert(false);
     setEdit(false);
@@ -165,7 +177,7 @@ console.log(data)
         <Sidebar refreshPage={()=>setRefreshPage((prev)=>!prev)}/>
         <div className="right-side-container">
           <div className="top-nav-bar">
-            <h1>Tasks</h1>
+            <h1>{pathName}</h1>
             <img src="/images/setting.png" alt="" />
           </div>
           <main className="main-area">

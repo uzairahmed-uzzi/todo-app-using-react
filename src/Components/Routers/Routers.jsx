@@ -22,5 +22,8 @@ export const router=createBrowserRouter([
             element:<Important />
         }
     ]
+},{
+    path:"*",
+    element:<h1>NOT FOUND</h1>
 }
 ])
