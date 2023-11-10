@@ -45,6 +45,7 @@ export const FireBaseProvider=(props)=>{
     });
     return dataArr;
   }
+
   // ADD DATA
   const postData=async(data)=>await addDoc(dbCollection,data);
   // UPDATE DATA

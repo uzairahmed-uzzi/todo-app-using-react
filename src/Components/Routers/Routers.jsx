@@ -2,6 +2,8 @@ import React from 'react'
 import {createBrowserRouter} from 'react-router-dom'
 import Layout from '../LAYOUT/Layout'
 import Tasks from '../Tasks/Tasks'
+import Completed from '../Completed/Completed'
+import Important from '../Important/Important'
 
 export const router=createBrowserRouter([
 {
@@ -10,7 +12,14 @@ export const router=createBrowserRouter([
     children:[
         {
             path:"",
-            element:<Tasks/>
+            element:<Tasks />
+        },
+        {
+            path:"completed",
+            element:<Completed />
+        },{
+            path:"important",
+            element:<Important />
         }
     ]
 }

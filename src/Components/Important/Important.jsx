@@ -1,13 +1,13 @@
 import React from "react";
 import { useOutletContext } from "react-router";
 import GridViewList from "../GridViewList/GridViewList";
-const Tasks = () => {
+const Important = () => {
     const [handleSelect,data,enabler]=useOutletContext();
   return (
     <>
       <ul>
         {data.map((ele) => {
-          if (!ele.data.important && !ele.data.completed) {
+          if (ele.data.important) {
             return (
               <GridViewList
                 para={ele.data.todo}
@@ -28,4 +28,4 @@ const Tasks = () => {
   );
 };
 
-export default Tasks;
+export default Important;

@@ -17,6 +17,7 @@ const Layout = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [edit, setEdit] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [refreshPage, setRefreshPage] = useState(false);
   const [openConfirmDelete, setConfirmOpenDelete] = useState(false);
   const [data, setData] = useState([]);
   const [openAlert, setOpenAlert] = useState(false);
@@ -114,6 +115,13 @@ const Layout = () => {
   useEffect(() => {
     getData();
   }, [open, refresh]);
+  // UNCHECK AND EMPTY KEY ARR
+  useEffect(()=>{
+    data.forEach((ele,ind)=>{
+      ele.checked=false;
+    })
+    setkeyArr([]);  
+  },[refreshPage,refresh])
   // CHECK UN CHECK
   const handleSelect = (e, id) => {
     const obj = data.find((item) => item.id === id);
@@ -154,7 +162,7 @@ console.log(data)
       {openAlert && <Alerts sev="warning" message={msg} openVal={true} />}
 
       <div className="container">
-        <Sidebar />
+        <Sidebar refreshPage={()=>setRefreshPage((prev)=>!prev)}/>
         <div className="right-side-container">
           <div className="top-nav-bar">
             <h1>Tasks</h1>
@@ -191,9 +199,7 @@ console.log(data)
             </aside>
             <aside className="data-grid-container">
             { data && <Outlet
-                handleSelect={handleSelect}
-                data={data}
-                enabler={enabler}
+            context={[handleSelect,data,enabler]}
               />}
             </aside>
           </main>

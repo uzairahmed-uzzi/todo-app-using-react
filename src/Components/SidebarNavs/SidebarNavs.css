@@ -12,7 +12,7 @@
     box-shadow: 0 2px 5px black;
     transition: all 0.2s ease-in-out;
 }
-.navButtons:active { 
+.active { 
     transform: scale(0.98); 
     box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);  
     background-color: #D9D9D9;
