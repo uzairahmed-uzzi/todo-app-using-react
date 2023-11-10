@@ -15,10 +15,10 @@ export const router=createBrowserRouter([
             element:<Tasks />
         },
         {
-            path:"completed",
+            path:"/completed",
             element:<Completed />
         },{
-            path:"important",
+            path:"/important",
             element:<Important />
         }
     ]
