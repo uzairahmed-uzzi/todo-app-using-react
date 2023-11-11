@@ -3,8 +3,9 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    width: 130px;
-    height: 110px;
+    width: 90%;
+    max-width: 130px;
+    max-height: 110px;
     padding: 30px 10px 30px 10px; 
     font-family: 'Josefin Sans',sans-serif;
     border-radius: 32px;

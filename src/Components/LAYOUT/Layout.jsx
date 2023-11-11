@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useFireBase } from "../../Firebase/Firebase";
-import { useParams,useLocation } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import "./Layout.css";
 import Sidebar from "../SIDEBAR/Sidebar";
 import ActionButton from "../ActionButton/ActionButton";
 import Alerts from "../Alert/Alerts";
 import InputModal from "../InputModal/InputModal";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
-import {Outlet} from 'react-router-dom'
+import { Outlet } from "react-router-dom";
+import LeftDrawer from "../LeftDrawer/LeftDrawer";
 
 const Layout = () => {
   const firebase = useFireBase();
@@ -23,19 +24,20 @@ const Layout = () => {
   const [keyArr, setkeyArr] = useState([]);
   const [visibilty, setVisibility] = useState(false);
   const [msg, setMsg] = useState("must not be empty");
-  const location=useLocation();
-  const [pathName,setPathName]=useState("Tasks");
-  const switchPathName=()=>{
-    const path=location.pathname.slice(1,);
-    switch(path){
-    case "important":
-      return "Importants Tasks";
-    case "completed":
-      return "Completed Tasks"
-    default:
-      return "Tasks";
+  const location = useLocation();
+  const [pathName, setPathName] = useState("Tasks");
+  const [width, setWidth] = React.useState(window.innerWidth);
+  const switchPathName = () => {
+    const path = location.pathname.slice(1);
+    switch (path) {
+      case "important":
+        return "Importants Tasks";
+      case "completed":
+        return "Completed Tasks";
+      default:
+        return "Tasks";
     }
-  }
+  };
   // EDIT TODO
   const editTodo = (e) => {
     if (keyArr.length === 1) {
@@ -127,13 +129,13 @@ const Layout = () => {
     getData();
   }, [open, refresh]);
   // UNCHECK AND EMPTY KEY ARR
-  useEffect(()=>{
-    data.forEach((ele,ind)=>{
-      ele.checked=false;
-    })
-    setkeyArr([]);  
-    setPathName(()=>switchPathName());
-  },[refreshPage,refresh])
+  useEffect(() => {
+    data.forEach((ele, ind) => {
+      ele.checked = false;
+    });
+    setkeyArr([]);
+    setPathName(() => switchPathName());
+  }, [refreshPage, refresh]);
   // CHECK UN CHECK
   const handleSelect = (e, id) => {
     const obj = data.find((item) => item.id === id);
@@ -160,21 +162,40 @@ const Layout = () => {
         completed: false,
         time: new Date(),
       });
-
     }
     setOpenAlert(false);
     setEdit(false);
     setTodo("");
     handleOpen();
   };
-
+  // SCREEN STATE
+  const breakpoint = 700;
+  React.useEffect(() => {
+    const handleResizeWindow = () => setWidth(window.innerWidth);
+    // subscribe to window resize event "onComponentDidMount"
+    window.addEventListener("resize", handleResizeWindow);
+    return () => {
+      // unsubscribe "onComponentDestroy"
+      window.removeEventListener("resize", handleResizeWindow);
+    };
+  }, []);
   // RENDERING..............
   return (
     <>
       {openAlert && <Alerts sev="warning" message={msg} openVal={true} />}
 
       <div className="container">
-        <Sidebar refreshPage={()=>setRefreshPage((prev)=>!prev)}/>
+        {(() => {
+          if (width > breakpoint) {
+            return (
+              <Sidebar refreshPage={() => setRefreshPage((prev) => !prev)} />
+            );
+          } else {
+            <LeftDrawer>
+              <Sidebar refreshPage={() => setRefreshPage((prev) => !prev)} />
+            </LeftDrawer>;
+          }
+        })()}
         <div className="right-side-container">
           <div className="top-nav-bar">
             <h1>{pathName}</h1>
@@ -210,9 +231,7 @@ const Layout = () => {
               )}
             </aside>
             <aside className="data-grid-container">
-            { data && <Outlet
-            context={[handleSelect,data,enabler]}
-              />}
+              {data && <Outlet context={[handleSelect, data, enabler]} />}
             </aside>
           </main>
         </div>
