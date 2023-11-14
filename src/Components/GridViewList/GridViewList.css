@@ -1,14 +1,19 @@
 .grid-list{
-  display: flex;
+  /* margin: 0 auto; */
+  display: grid;
+  grid-template-columns: 8% 80% 8%; 
   min-width: 65vw;
-  justify-content: space-around;
+  width: 100%;
   align-items: center;
+  justify-items: center;
+  /* gap: 5%; */
 }
-ul .grid-para {
+li .grid-para {
   /* clear: left; */
   overflow-y: scroll;
+  overflow-x: hidden;
   width: 90%;
-  min-width: 90%;
+  /* min-width: 90%; */
   min-height: 40px;
   max-height: 100px;
   padding: 8px 10px;
@@ -27,8 +32,12 @@ ul .grid-para {
   background-color: transparent;
 }
 .star{
-  font-size: 24px;
+  font-size: 30px;
 }
+/* .star svg{
+  width: 100px;
+  height: 200px;
+} */
 .star:hover{
   cursor: pointer;
   transition: all 0.5s ease-in-out;

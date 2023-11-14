@@ -8,7 +8,9 @@ import Alerts from "../Alert/Alerts";
 import InputModal from "../InputModal/InputModal";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import { Outlet } from "react-router-dom";
+import Button from "@mui/material/Button";
 import LeftDrawer from "../LeftDrawer/LeftDrawer";
+import { IoMdMenu } from "react-icons/io";
 
 const Layout = () => {
   const firebase = useFireBase();
@@ -27,6 +29,8 @@ const Layout = () => {
   const location = useLocation();
   const [pathName, setPathName] = useState("Tasks");
   const [width, setWidth] = React.useState(window.innerWidth);
+  const [state, setState] = React.useState(false);
+
   const switchPathName = () => {
     const path = location.pathname.slice(1);
     switch (path) {
@@ -179,6 +183,20 @@ const Layout = () => {
       window.removeEventListener("resize", handleResizeWindow);
     };
   }, []);
+  // TOGGLE DRAWER  
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event &&
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+
+    setState(open);
+  };
+
+
   // RENDERING..............
   return (
     <>
@@ -191,15 +209,27 @@ const Layout = () => {
               <Sidebar refreshPage={() => setRefreshPage((prev) => !prev)} />
             );
           } else {
-            <LeftDrawer>
+           return state&& <LeftDrawer
+            state={state}
+            onClose={toggleDrawer( false)}
+            onOpen={toggleDrawer(true)}
+
+            >
               <Sidebar refreshPage={() => setRefreshPage((prev) => !prev)} />
-            </LeftDrawer>;
+            </LeftDrawer>
           }
         })()}
         <div className="right-side-container">
           <div className="top-nav-bar">
             <h1>{pathName}</h1>
-            <img src="/images/setting.png" alt="" />
+            {(()=>{
+              if (width > breakpoint) {
+                return   <img src="/images/setting.png" alt="" />
+              }else{
+                return   <><IoMdMenu className="myBtn" onClick={toggleDrawer(true)}/></>
+              }
+            })()
+            }
           </div>
           <main className="main-area">
             <aside className="left-actions-container">
@@ -230,8 +260,10 @@ const Layout = () => {
                 ""
               )}
             </aside>
-            <aside className="data-grid-container">
+            <aside className="right-container">
+            <div className="data-grid-container">
               {data && <Outlet context={[handleSelect, data, enabler]} />}
+            </div>
             </aside>
           </main>
         </div>

@@ -4,11 +4,13 @@
     flex-direction: column;
     overflow: hidden;
     width: 90%;
+    height: 18.5vh;
     max-width: 130px;
     max-height: 110px;
-    padding: 30px 10px 30px 10px; 
+    /* padding: 30px 10px 30px 10px;  */
+    padding: 20% 5%;
     font-family: 'Josefin Sans',sans-serif;
-    border-radius: 32px;
+    border-radius: 30%;
     background-color: #C4DCD3;
     box-shadow: 0 2px 5px black;
 
@@ -19,7 +21,7 @@
 }
 .actionButton img{
     margin: 0 auto;
-    width: 20px;
+    width: 15%;
 }
 .actionButton:active { 
     transform: scale(0.98); 
@@ -28,4 +30,21 @@
 }
 .actionButton:hover{
     cursor: pointer;
+}
+@media screen and (max-width:700px) {
+    .actionButton{
+        width: 20vw;
+        height: 10vh;
+        padding: 5% 3%;
+
+    }
+    .actionButton h3{
+        font-size: smaller;
+        margin:0 auto 5px auto;
+        text-align: center;
+    }
+    .actionButton img{
+        margin: 0 auto;
+        width: 15px;
+    }
 }

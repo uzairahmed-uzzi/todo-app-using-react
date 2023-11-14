@@ -37,3 +37,8 @@
     width: 100%;
     overflow-x: visible !important;
 }
+@media screen and (max-width:700px){
+    .sidebar{
+        width: 100%;
+    }
+}
