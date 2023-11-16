@@ -51,7 +51,7 @@ export const FireBaseProvider=(props)=>{
   // UPDATE DATA
   const updateData=async(idref,data)=>{
     const docRef=doc(db,'todo',idref);
-     await updateDoc(docRef,data);
+      updateDoc(docRef,data);
     console.log("UPDATED....");
   }
   // DELETE DATA

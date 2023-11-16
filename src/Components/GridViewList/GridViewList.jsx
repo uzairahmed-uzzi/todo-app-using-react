@@ -12,14 +12,20 @@ const GridViewList = (props) => {
   const [star, toggleStar] = useState(props.important);
 
   const handleStar = async(e,id) => {
-    const obj = data.find((item) => item.id === id);
-    const imp=obj.important;
+    const obj =await data.find((item) => item.id === id);
+    console.log(obj.data)
+    const imp=obj.data.important;
+    console.log("==>OLD IMPORTANT: ",imp);
     const newImportant = !imp;
-    obj.important=  newImportant;
+    obj.data.important=  newImportant;
     console.log("==>IMPORTANT: ",newImportant);
+    firebase.updateData(id,{important:newImportant});
     toggleStar(newImportant);
-    await firebase.updateData(id,{important:newImportant});
+    props.setRefresh();
   };
+  // useEffect(()=>{
+  //   props.setRefresh();
+  // })
  
   return (
     <li className="grid-list" >

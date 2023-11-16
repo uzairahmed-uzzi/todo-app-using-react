@@ -114,6 +114,7 @@ const Layout = () => {
     enabler();
   }, [keyArr]);
  const refreshList=()=>{
+  console.log("RENDERING......")
    return setRefresh((prev)=>!prev)
  }
   //OPEN MODAL
@@ -280,7 +281,10 @@ const Layout = () => {
             </aside>
             <aside className="right-container">
               <div className="data-grid-container">
-                {data && <Outlet context={[handleSelect, data, enabler,refresh,refreshList]}  key={refresh}/>}
+                {
+                data && <Outlet context={[handleSelect, data, enabler,refresh,refreshList]} />
+                
+                }
               </div>
             </aside>
           </main>
