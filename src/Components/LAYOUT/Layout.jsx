@@ -138,14 +138,22 @@ const Layout = () => {
   }, [open, refresh]);
   // UNCHECK AND EMPTY KEY ARR
   useEffect(() => {
+    console.log("edit",edit)
     if(!edit){
       data.forEach((ele, ind) => {
         ele.checked = false;
       });
       setkeyArr([]);
       setPathName(() => switchPathName());
+      // window.location.reload()
     }
   }, [refreshPage, refresh]);
+  useEffect(()=>{
+    console.log("EDITTT",edit)
+    if(!edit){
+      refreshList();
+    }
+  },[edit])
   // CHECK UN CHECK
   const handleSelect = (e, id) => {
     const obj = data.find((item) => item.id === id);
@@ -163,20 +171,23 @@ const Layout = () => {
   const addtask = async () => {
     if (!todo) {
       setOpenAlert(true);
-    } else if (edit && keyArr.length === 1) {
-      console.log(keyArr);
-      await firebase.updateData(keyArr[0], { todo: todo });
-      setEdit(false);
     } else if(!edit) {
       const ref = await firebase.postData({
         todo,
         important: false,
         completed: false,
         time: new Date(),
-      });
+      }
+      );
       setEdit(false);
 
     }
+    else if (edit && keyArr.length === 1) {
+      console.log(keyArr);
+      await firebase.updateData(keyArr[0], { todo: todo });
+      setEdit(false);
+    }
+    // console.log(refreshPage);
     setOpenAlert(false);
     setEdit(false);
     setTodo("");
