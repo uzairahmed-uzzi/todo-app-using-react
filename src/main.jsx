@@ -8,9 +8,9 @@ import { router } from './Components/Routers/Routers.jsx'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <>
   <FireBaseProvider>
-    <ScrollRestoration>
+    
       <RouterProvider router={router}/>
-    </ScrollRestoration>
+  
   </FireBaseProvider>
   </>,
 )
