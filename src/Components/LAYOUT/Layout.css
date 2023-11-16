@@ -11,6 +11,9 @@
 }
 
 .top-nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   position: absolute;
   top: 0px;
   margin: 5px 0;
@@ -19,20 +22,31 @@
   height: 9vh;
   width: 100%;
   background-color: #d9d9d9;
+  /* display: block; */
+}
+.heading-nav{
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.logo-setting{
+  display: flex;
+  align-self: center;
+  height: 100%;
 }
 
 .top-nav-bar h1 {
   display: inline-block;
-  position: absolute;
-  top: 30%;
-  left: 45px;
+  /* position: absolute; */
+  /* top: 20%; */
+  /* left: 45px; */
 }
 
 .top-nav-bar > img,button,.myBtn {
   display: inline-block;
   height: 100%;
-  position: absolute;
-  right: 5px;
+  /* position: absolute;
+  right: 5px; */
 }
 .myBtn{
   display: inline-block;
@@ -120,5 +134,22 @@
     height: 80%;
     width: 100%;
   }
+  @media screen and (max-height: 300px) {
+  
+    /* .top-nav-bar h1{
+      font-size: 1.3rem;
+      top:0px;
+    } */
+    .main-area {
+      /* margin-top: 30px; */
+      grid-template-columns: 100%;
+      grid-template-rows: 30%; 
+      height: 100vh;
+    }
+  }
 
+}
+@media screen and (max-height: 500px) {
+  
+  
 }

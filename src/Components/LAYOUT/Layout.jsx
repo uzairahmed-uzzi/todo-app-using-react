@@ -56,6 +56,7 @@ const Layout = () => {
       setMsg("Select atleast 1 ");
       setOpenAlert(true);
     }
+    setRefresh((prev) => !prev);
   };
   // MARK COMPLETED
   const markCompleted = () => {
@@ -112,7 +113,9 @@ const Layout = () => {
   useEffect(() => {
     enabler();
   }, [keyArr]);
-
+ const refreshList=()=>{
+   return setRefresh((prev)=>!prev)
+ }
   //OPEN MODAL
   const handleConfirmOpen = () => {
     setOpenConfirm(!openConfirm);
@@ -183,7 +186,7 @@ const Layout = () => {
       window.removeEventListener("resize", handleResizeWindow);
     };
   }, []);
-  // TOGGLE DRAWER  
+  // TOGGLE DRAWER
   const toggleDrawer = (open) => (event) => {
     if (
       event &&
@@ -195,7 +198,6 @@ const Layout = () => {
 
     setState(open);
   };
-
 
   // RENDERING..............
   return (
@@ -209,27 +211,43 @@ const Layout = () => {
               <Sidebar refreshPage={() => setRefreshPage((prev) => !prev)} />
             );
           } else {
-           return state&& <LeftDrawer
-            state={state}
-            onClose={toggleDrawer( false)}
-            onOpen={toggleDrawer(true)}
-
-            >
-              <Sidebar refreshPage={() => setRefreshPage((prev) => !prev)} />
-            </LeftDrawer>
+            return (
+              state && (
+                <LeftDrawer
+                  state={state}
+                  onClose={toggleDrawer(false)}
+                  onOpen={toggleDrawer(true)}
+                >
+                  <Sidebar
+                    refreshPage={() => setRefreshPage((prev) => !prev)}
+                  />
+                </LeftDrawer>
+              )
+            );
           }
         })()}
         <div className="right-side-container">
           <div className="top-nav-bar">
+            <>
+            <div className="heading-nav">
+
             <h1>{pathName}</h1>
-            {(()=>{
+            </div>
+            <div className="logo-setting">
+            {(() => {
               if (width > breakpoint) {
-                return   <img src="/images/setting.png" alt="" />
-              }else{
-                return   <><IoMdMenu className="myBtn" onClick={toggleDrawer(true)}/></>
+                return <img src="/images/setting.png" alt="" />;
+              } else {
+                return (
+                  <>
+                    <IoMdMenu className="myBtn" onClick={toggleDrawer(true)} />
+                  </>
+                );
               }
-            })()
-            }
+            })()}
+
+            </div>
+            </>
           </div>
           <main className="main-area">
             <aside className="left-actions-container">
@@ -261,9 +279,9 @@ const Layout = () => {
               )}
             </aside>
             <aside className="right-container">
-            <div className="data-grid-container">
-              {data && <Outlet context={[handleSelect, data, enabler]} />}
-            </div>
+              <div className="data-grid-container">
+                {data && <Outlet context={[handleSelect, data, enabler,refresh,refreshList]}  key={refresh}/>}
+              </div>
             </aside>
           </main>
         </div>

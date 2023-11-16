@@ -2,7 +2,7 @@ import React from "react";
 import { useOutletContext } from "react-router";
 import GridViewList from "../GridViewList/GridViewList";
 const Important = () => {
-    const [handleSelect,data,enabler]=useOutletContext();
+    const [handleSelect,data,enabler,refresh,refreshList]=useOutletContext();
   return (
     <>
       <ul>
@@ -19,6 +19,7 @@ const Important = () => {
                 data={data}
                 enable={enabler}
                 important={ele.data.important}
+                setRefresh={()=>refreshList()}
               />
             );
           }

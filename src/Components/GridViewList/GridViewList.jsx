@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
 import Checkbox from "@mui/material/Checkbox";
 import "./GridViewList.css";
@@ -14,16 +14,17 @@ const GridViewList = (props) => {
   const handleStar = async(e,id) => {
     const obj = data.find((item) => item.id === id);
     const imp=obj.important;
-    obj.important=  !imp;
-    console.log("==>IMPORTANT: ",obj.important);
-    toggleStar(obj.important);
-    await firebase.updateData(id,{important:obj.important});
+    const newImportant = !imp;
+    obj.important=  newImportant;
+    console.log("==>IMPORTANT: ",newImportant);
+    toggleStar(newImportant);
+    await firebase.updateData(id,{important:newImportant});
   };
  
   return (
-    <li className="grid-list">
+    <li className="grid-list" >
       {star ? (
-        <AiFillStar className="star"    onClick={(e)=>handleStar(e,id)} />
+        <AiFillStar    className="star" onClick={(e)=>handleStar(e,id)} />
       ) : (
         <AiOutlineStar className="star" onClick={(e)=>handleStar(e,id)} />
       )}
