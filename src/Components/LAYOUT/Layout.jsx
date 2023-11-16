@@ -138,11 +138,13 @@ const Layout = () => {
   }, [open, refresh]);
   // UNCHECK AND EMPTY KEY ARR
   useEffect(() => {
-    data.forEach((ele, ind) => {
-      ele.checked = false;
-    });
-    setkeyArr([]);
-    setPathName(() => switchPathName());
+    if(!edit){
+      data.forEach((ele, ind) => {
+        ele.checked = false;
+      });
+      setkeyArr([]);
+      setPathName(() => switchPathName());
+    }
   }, [refreshPage, refresh]);
   // CHECK UN CHECK
   const handleSelect = (e, id) => {
@@ -161,15 +163,19 @@ const Layout = () => {
   const addtask = async () => {
     if (!todo) {
       setOpenAlert(true);
-    } else if (edit) {
+    } else if (edit && keyArr.length === 1) {
+      console.log(keyArr);
       await firebase.updateData(keyArr[0], { todo: todo });
-    } else {
+      setEdit(false);
+    } else if(!edit) {
       const ref = await firebase.postData({
         todo,
         important: false,
         completed: false,
         time: new Date(),
       });
+      setEdit(false);
+
     }
     setOpenAlert(false);
     setEdit(false);

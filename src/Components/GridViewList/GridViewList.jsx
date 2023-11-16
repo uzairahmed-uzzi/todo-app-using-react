@@ -19,7 +19,7 @@ const GridViewList = (props) => {
     const newImportant = !imp;
     obj.data.important=  newImportant;
     console.log("==>IMPORTANT: ",newImportant);
-    firebase.updateData(id,{important:newImportant});
+    await firebase.updateData(id,{important:newImportant});
     toggleStar(newImportant);
     props.setRefresh();
   };

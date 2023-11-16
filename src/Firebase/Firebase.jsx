@@ -50,8 +50,10 @@ export const FireBaseProvider=(props)=>{
   const postData=async(data)=>await addDoc(dbCollection,data);
   // UPDATE DATA
   const updateData=async(idref,data)=>{
+    console.log(idref);
+    console.log(data);
     const docRef=doc(db,'todo',idref);
-      updateDoc(docRef,data);
+     await updateDoc(docRef,data);
     console.log("UPDATED....");
   }
   // DELETE DATA
