@@ -24,7 +24,7 @@ const firebaseConfig = {
   projectId: "todo-uzziverse",
   storageBucket: "todo-uzziverse.appspot.com",
   messagingSenderId: "792870151219",
-  appId: "1:792870151219:web:f6890e6e830e348ae92f46"
+  appId: "1:792870151219:web:2227c53589455358e92f46"
 };
 
 // Initialize Firebase
